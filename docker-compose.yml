@@ -1,0 +1,28 @@
+services:
+  mcxboxbroadcast:
+    image: ghcr.io/mcxboxbroadcast/standalone@sha256:bd00c168e3183738dc364b0da9a6df83f1e809124ee0698f0b3fdd691054118a
+    platform: linux/amd64
+    container_name: mcxboxbroadcast
+    restart: unless-stopped
+    user: "1001:1001"
+    group_add:
+      - "1000"
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    volumes:
+      - ./config:/opt/app/config
+      - /etc/server-secrets/mcxboxbroadcast:/run/secrets/mcxboxbroadcast
+    command:
+      - /bin/sh
+      - -c
+      - umask 007; exec java -jar /opt/app/MCXboxBroadcastStandalone.jar
+    environment:
+      - NO_COLOR=1
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
